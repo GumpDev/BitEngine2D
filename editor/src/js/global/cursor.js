@@ -1,14 +1,16 @@
-//Objetos
+//#region Objetos
 var CursorJSON = '{"mouse":{"x":"0","y":"0"}}';
 var Cursor = JSON.parse(CursorJSON);
+//#endregion
 
-//Posição do mouse
+//#region Posição do Mouse
 document.addEventListener('mousemove', function(event){
 	Cursor.x = event.clientX;
 	Cursor.y = event.clientY; 
 });
+//#endregion
 
-//Aparecer context do botão direito
+//#region Botão Direito Personalizado
 function showRightContext(bool){
 	if(bool){
 		var rightContext = document.getElementById("rightContent");
@@ -34,3 +36,4 @@ function rightClickContext(){
         }, false);
     }
 }
+//#endregion

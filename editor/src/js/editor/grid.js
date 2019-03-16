@@ -1,11 +1,11 @@
-//Objetos
+//#region Objetos
 var WorldJSON = '{"size":{"x":"10","y":"10"},"unit":{"type": "block","size": "100"}}';
 var World = JSON.parse(WorldJSON);
 
 var SelectedUnit = [];
-//END//
+//#endregion
 
-//Iniciar
+//#region Iniciar
 function init(){
 	World.size.x = 25;
 	World.size.y = 10;
@@ -13,13 +13,12 @@ function init(){
 	createGrid();
 	rightClickContext();
 }
-//END//
-
 document.addEventListener('onload',function(event){
 	init();
 });
+//#endregion
 
-//Criar Grid/unit
+//#region Criar Grid/Unit
 function createGrid(){
 	var grid = document.getElementById("grid");
 	grid.innerHTML = "";
@@ -55,9 +54,9 @@ function createPolygon(x,y)
 	grid.innerHTML += "<polygon points='"+((0.5+x)*World.unit.size)+","+(((0.5+y)*World.unit.size))+" "+((1+x)*World.unit.size)+","+((1+y)*World.unit.size)+" "+x*World.unit.size+","+((1+y)*World.unit.size)+"' class='unit' id='polygon:"+x+"x"+y+"-3'/>";
 	grid.innerHTML += "<polygon points='"+x*World.unit.size+","+y*World.unit.size+" "+((0.5+x)*World.unit.size)+","+(0.5+y)*World.unit.size+" "+x*World.unit.size+","+((1+y)*World.unit.size)+"' class='unit' id='polygon:"+x+"x"+y+"-4'/>";
 }
-//END//
+//#endregion
 
-//Selecionar Unit
+//#region Selecionar Unit
 var bottonsPressed = [];
 
 document.addEventListener('keydown',function(event)
@@ -70,7 +69,9 @@ document.addEventListener('keyup',function(event)
 });
 document.addEventListener('mousedown',function(event)
 {
-	selectUnit(event.target.id);
+	if(event.buttons == 1){
+		selectUnit(event.target.id);
+	}
 });
 
 function selectUnit(id)
@@ -100,4 +101,4 @@ function selectUnitDesign(bool,id)
 		design.style.stroke = "gray";
 	}
 }
-//END//
+//#endregion
