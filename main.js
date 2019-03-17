@@ -5,5 +5,6 @@ let mainWindow = null;
 app.on('ready', () =>{
     mainWindow = new BrowserWindow({frame: false,width: 950, height: 650, icon: path.join(__dirname, '/icon.png')});
     mainWindow.setMenu(null);
+    mainWindow.webContents.openDevTools();
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 });
