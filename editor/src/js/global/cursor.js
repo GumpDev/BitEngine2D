@@ -11,6 +11,14 @@ document.addEventListener('mousemove', function(event){
 //#endregion
 
 //#region Botão Direito Personalizado
+function initRightContext(){
+	var rightContext = document.getElementById("rightContent");
+	rightContext.innerHTML += "Forma da Unidade<br>";
+	rightContext.innerHTML += "<a id='split' onclick='splitUnit()' class='disable'>Separar</a>";
+	rightContext.innerHTML += "<a id='uniform' onclick='uniformUnit()' class='disable'>Unificar</a>";
+	rightContext.innerHTML += "<hr>";
+}
+
 function showRightContext(bool){
 	if(bool){
 		var rightContext = document.getElementById("rightContent");
@@ -34,6 +42,7 @@ function rightClickContext(){
 			showRightContext(true);
             e.preventDefault();
         }, false);
-    }
+	}
+	initRightContext();
 }
 //#endregion
