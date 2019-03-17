@@ -10,8 +10,8 @@ var gridUnits = [];
 
 //#region Iniciar
 function init(){
-	World.size.x = 25;
-	World.size.y = 10;
+	World.size.x = 20;
+	World.size.y = 20;
 	World.unit.type = "block";
 	createGrid();
 	rightClickContext();
@@ -262,4 +262,43 @@ function selectUnitDesign(bool,id)
 		design.style.stroke = "gray";
 	}
 }
+//#endregion
+
+//#region Movimentação da Camera do Editor
+
+var PressedKey = [];
+
+document.addEventListener('keydown',function(event)
+{
+	if(!PressedKey.includes(event.key)){
+		PressedKey.push(event.key);
+	}
+});
+
+document.addEventListener('keyup',function(event)
+{
+	if(PressedKey.includes(event.key)){
+		for(var i = 0; i < PressedKey.length; i++){
+			if(PressedKey[i] == event.key){
+				PressedKey.splice(i,1);
+				break;
+			}
+		}
+	}
+});
+
+var velocidade = 2;
+
+setInterval(() => {
+	if(PressedKey.includes("w"))
+		scrollTo(scrollX,scrollY - velocidade);
+	if(PressedKey.includes("a"))
+		document.body.scrollTo(document.body.scrollLeft - velocidade,document.body.scrollTop);
+	if(PressedKey.includes("s"))
+		scrollTo(scrollX,scrollY + velocidade);
+	if(PressedKey.includes("d"))
+		document.body.scrollTo(document.body.scrollLeft + velocidade,document.body.scrollTop);
+	
+}, 10);
+
 //#endregion
