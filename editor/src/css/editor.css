@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 *
 {
     user-select: none;
+    font-family: 'Roboto', sans-serif;
 }
 
 body
@@ -65,4 +68,12 @@ html
     top: 60%;
     width: 60%;
     height: 40%;
+}
+
+.title
+{
+    position: relative;
+    top: 5px;
+    left: 10px;
+    font-size: 15px;
 }
