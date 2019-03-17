@@ -17,7 +17,6 @@ function initRightContext(){
 	rightContext.innerHTML += "<a id='flipBtn' onclick='flipUnit()'>Virar</a>";
 	rightContext.innerHTML += "<a id='split' onclick='splitUnit()'>Separar</a>";
 	rightContext.innerHTML += "<a id='uniform' onclick='uniformUnit()'>Unificar</a>";
-	rightContext.innerHTML += "<hr>";
 }
 
 function showRightContext(bool){
