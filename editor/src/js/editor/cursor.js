@@ -14,8 +14,9 @@ document.addEventListener('mousemove', function(event){
 function initRightContext(){
 	var rightContext = document.getElementById("rightContent");
 	rightContext.innerHTML += "Forma da Unidade<br>";
-	rightContext.innerHTML += "<a id='split' onclick='splitUnit()' class='disable'>Separar</a>";
-	rightContext.innerHTML += "<a id='uniform' onclick='uniformUnit()' class='disable'>Unificar</a>";
+	rightContext.innerHTML += "<a id='flipBtn' onclick='flipUnit()'>Virar</a>";
+	rightContext.innerHTML += "<a id='split' onclick='splitUnit()'>Separar</a>";
+	rightContext.innerHTML += "<a id='uniform' onclick='uniformUnit()'>Unificar</a>";
 	rightContext.innerHTML += "<hr>";
 }
 

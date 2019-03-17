@@ -37,7 +37,7 @@ function createGrid(){
 }
 
 function insertGridUnits(x,y,tipo){
-	gridUnits.push({x:x,y:y,type:tipo});
+	gridUnits.push({x:x,y:y,type:tipo,flip:false});
 }
 
 function createUnitInScene(){
@@ -48,9 +48,11 @@ function createUnitInScene(){
 	for(var i = 0; i < gridUnits.length; i++){
 		if(gridUnits[i].type == "block")
 			createBlock(gridUnits[i].x,gridUnits[i].y);
-		if(gridUnits[i].type == "triangle")
+		else if(gridUnits[i].type == "triangle" && gridUnits[i].flip == true)	
+			createRTriangle(gridUnits[i].x,gridUnits[i].y);
+		else if(gridUnits[i].type == "triangle")
 			createTriangle(gridUnits[i].x,gridUnits[i].y);
-		if(gridUnits[i].type == "polygon")
+		else if(gridUnits[i].type == "polygon")
 			createPolygon(gridUnits[i].x,gridUnits[i].y);
 	}
 }
@@ -64,6 +66,12 @@ function createTriangle(x,y)
 {
 	grid.innerHTML += "<polygon points='"+x*World.unit.size+","+y*World.unit.size+" "+((1+x)*World.unit.size)+","+y*World.unit.size+" "+x*World.unit.size+","+((1+y)*World.unit.size)+"' class='unit' id='triangle:"+x+"x"+y+"-1'/>";
 	grid.innerHTML += "<polygon points='"+(1+x)*World.unit.size+","+y*World.unit.size+" "+((1+x)*World.unit.size)+","+((1+y)*World.unit.size)+" "+x*World.unit.size+","+((1+y)*World.unit.size)+"' class='unit' id='triangle:"+x+"x"+y+"-2'/>";
+}
+
+function createRTriangle(x,y)
+{
+	grid.innerHTML += "<polygon points='"+x*World.unit.size+","+y*World.unit.size+" "+((1+x)*World.unit.size)+","+y*World.unit.size+" "+(1+x)*World.unit.size+","+((1+y)*World.unit.size)+"' class='unit' id='triangle:"+x+"x"+y+"-1'/>";
+	grid.innerHTML += "<polygon points='"+x*World.unit.size+","+y*World.unit.size+" "+((1+x)*World.unit.size)+","+((1+y)*World.unit.size)+" "+x*World.unit.size+","+((1+y)*World.unit.size)+"' class='unit' id='triangle:"+x+"x"+y+"-2'/>";
 }
 
 function createPolygon(x,y)
@@ -88,12 +96,12 @@ function splitUnit(){
 		for(var i = 0; i < gridUnits.length; i++){
 			if(tipo == "block"){
 				if(gridUnits[i].x == x && gridUnits[i].y == y){
-					gridUnits[i] = {x:x,y:y,type:"triangle"};
+					gridUnits[i] = {x:x,y:y,type:"triangle",flip:gridUnits[i].flip};
 					break;
 				}
 			}else if(tipo == "triangle"){
 				if(gridUnits[i].x == x && gridUnits[i].y == y){
-					gridUnits[i] = {x:x,y:y,type:"polygon"};
+					gridUnits[i] = {x:x,y:y,type:"polygon",flip:gridUnits[i].flip};
 					break;
 				}
 			}
@@ -103,7 +111,6 @@ function splitUnit(){
 	createUnitInScene();
 	showRightContext(false);
 	unselectUnit();
-	
 }
 
 function uniformUnit(){
@@ -118,14 +125,36 @@ function uniformUnit(){
 		for(var i = 0; i < gridUnits.length; i++){
 			if(tipo == "triangle"){
 				if(gridUnits[i].x == x && gridUnits[i].y == y){
-					gridUnits[i] = {x:x,y:y,type:"block"};
+					gridUnits[i] = {x:x,y:y,type:"block",flip:gridUnits[i].flip};
 					break;
 				}
 			}else if(tipo == "polygon"){
 				if(gridUnits[i].x == x && gridUnits[i].y == y){
-					gridUnits[i] = {x:x,y:y,type:"triangle"};
+					gridUnits[i] = {x:x,y:y,type:"triangle",flip:gridUnits[i].flip};
 					break;
 				}
+			}
+		}
+	}
+
+	createUnitInScene();
+	showRightContext(false);
+	unselectUnit();
+}
+
+function flipUnit(){
+	for(var d = 0; d < SelectedUnit.length; d++){
+		var id = SelectedUnit[d];
+		var tipo = id.split(':')[0];
+		var x = id.split(':')[1].split('x')[0];
+		var y = id.split(':')[1].split('x')[1].split('-')[0];
+		x = parseInt(x);
+		y = parseInt(y);
+
+		for(var i = 0; i < gridUnits.length; i++){
+			if(gridUnits[i].x == x && gridUnits[i].y == y){
+				gridUnits[i] = {x:x,y:y,type:gridUnits[i].type,flip:!gridUnits[i].flip};
+				break;
 			}
 		}
 	}
@@ -154,23 +183,42 @@ document.addEventListener('mousedown',function(event)
 {
 	if(event.buttons == 1 && event.target.className.baseVal == "unit"){
 		selectUnit(event.target.id);
+	}else if(SelectedUnit.length < 2 && event.target.className.baseVal == "unit" && event.buttons == 2){
+		selectUnit(event.target.id);
 	}
+});
+
+document.addEventListener('mousemove', function(event){
+	if(Input.shift){
+		if(Input.ctrl){
+			if(SelectedUnit.includes(event.target.id)&& event.target.className.baseVal == "unit"){
+				selectUnit(event.target.id);
+			}
+		}else{
+			if(!SelectedUnit.includes(event.target.id)&& event.target.className.baseVal == "unit"){
+				selectUnit(event.target.id);
+			}
+		}
+	}	
 });
 
 function unselectUnit(){
 	SelectedUnit = [];
-	if(SelectedUnit.length > 0){
-		document.getElementById("split").className = "";
-		document.getElementById("uniform").className = "";
-	}else{
-		document.getElementById("split").className = "disable";
-		document.getElementById("uniform").className = "disable";
-	}
 }
 
 function selectUnit(id)
-{
-	if(Input.ctrl){
+	{if(Input.shift && Input.ctrl){
+		for(var i = 0; i < SelectedUnit.length; i++){
+			if(SelectedUnit[i] == id){
+				SelectedUnit.splice(i,1);
+				selectUnitDesign(false,id);
+				break;
+			}
+		}
+	}else if(Input.shift){
+		SelectedUnit.push(id);
+		selectUnitDesign(true,id);
+	}else if(Input.ctrl){
 		if(SelectedUnit.includes(id)){
 			for(var i = 0; i < SelectedUnit.length; i++){
 				if(SelectedUnit[i] == id){
@@ -180,7 +228,6 @@ function selectUnit(id)
 				}
 			}
 		}else{
-			console.log(id);
 			SelectedUnit.push(id);
 			selectUnitDesign(true,id);
 		}
